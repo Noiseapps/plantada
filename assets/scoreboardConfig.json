@@ -1,0 +1,38 @@
+{
+  "columns": [
+    {
+      "resource": "cigarettes",
+      "thresholdData": [
+        {
+          "max": 8,
+          "exportValue": 4
+        },
+        {
+          "max": 14,
+          "exportValue": 3
+        },
+        {
+          "max": 10000,
+          "exportValue": 2
+        }
+      ]
+    },
+    {
+      "resource": "booze",
+      "thresholdData": [
+        {
+          "max": 4,
+          "exportValue": 3
+        },
+        {
+          "max": 10,
+          "exportValue": 2
+        },
+        {
+          "max": 10000,
+          "exportValue": 1
+        }
+      ]
+    }
+  ]
+}

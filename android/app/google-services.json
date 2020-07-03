@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "924701090780",
+    "firebase_url": "https://plantada-ac901.firebaseio.com",
+    "project_id": "plantada-ac901",
+    "storage_bucket": "plantada-ac901.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924701090780:android:8a443f95be3c3abb4de519",
+        "android_client_info": {
+          "package_name": "com.noiseapps.plantada"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924701090780-8170sms9qbu3nmr1dehsgpo09q4hiitd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvX7xxEwUnF_rUVsMz_iFPLBOuEp4bDSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924701090780-8170sms9qbu3nmr1dehsgpo09q4hiitd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
