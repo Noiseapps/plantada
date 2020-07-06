@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plantada/data/resource.dart';
 import 'package:plantada/scoreboard/scoreboard.dart';
 
 void main() {

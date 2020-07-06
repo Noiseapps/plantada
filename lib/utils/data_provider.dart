@@ -1,41 +1,39 @@
-import 'package:flutter/material.dart';
+import 'package:plantada/data/achievement.dart';
+import 'package:plantada/data/resource.dart';
 import 'package:plantada/scoreboard/scoreboard.dart';
 
-class BottomBarItem {
-  const BottomBarItem._(this.icon, this.title);
+class ProviderFactory {
+  static DataProvider _provider = new DefaultDataProvider();
 
-  final IconData icon;
-  final String title;
-
-  static const BottomBarItem score = BottomBarItem._(Icons.score, "Wyniki");
-  static const BottomBarItem legend = BottomBarItem._(Icons.info, "Legenda");
-  static const BottomBarItem rules = BottomBarItem._(Icons.art_track, "Zasady");
-
-  static List<BottomBarItem> values() {
-    return [score, legend, rules];
+  static withProvider(DataProvider provider) {
+    ProviderFactory._provider = provider;
   }
 
-  static BottomBarItem atIndex(int index) {
-    if (index >= 0 && index < values().length) {
-      return values()[index];
-    } else {
-      return null;
-    }
+  static DataProvider activeProvider() {
+    return _provider;
   }
 }
 
 class DataProvider {
   ScoreboardConfig getConfig() {}
 
+  List<AchievementData> getAchievements() {}
+
   int targetScore() {}
 
-  void setScore(int score) {}
+  void setTargetScore(int score) {}
 
   static final defaultProvider = DefaultDataProvider();
 }
 
 class DefaultDataProvider implements DataProvider {
   int _score = 400;
+
+  @override
+  List<AchievementData> getAchievements() {
+    return AchievementData.list();
+  }
+
 
   @override
   ScoreboardConfig getConfig() {
@@ -54,7 +52,7 @@ class DefaultDataProvider implements DataProvider {
   }
 
   @override
-  void setScore(int score) {
+  void setTargetScore(int score) {
     _score = score;
   }
 }

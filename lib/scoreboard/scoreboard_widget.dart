@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:plantada/data/resource.dart';
+import 'package:plantada/data/player.dart';
+import 'package:plantada/scoreboard/achievements/achievement_screen.dart';
+import 'package:plantada/scoreboard/achievements/achievements_list.dart';
 import 'package:plantada/utils/data_provider.dart';
-import 'package:plantada/utils/resource_colors.dart';
 
-import 'scoreboard.dart';
 import 'game.dart';
 
 class ScoreboardWidget extends StatefulWidget {
+  _ScoreboardState _state;
+
   @override
-  ScoreboardState createState() => ScoreboardState();
+  _ScoreboardState createState() {
+    _state = _ScoreboardState();
+    return _state;
+  }
+
+  void startNewGame() {
+    if (_state != null) {
+      _state.startNewGame();
+    }
+  }
 }
 
-class ScoreboardState extends State<ScoreboardWidget> {
-  final game = Game.create();
+class _ScoreboardState extends State<ScoreboardWidget> {
+  final game = Game.get();
   bool isGameActive = true;
 
   @override
@@ -46,12 +59,13 @@ class ScoreboardState extends State<ScoreboardWidget> {
               children: <Widget>[
                 RaisedButton(
                   splashColor: Colors.redAccent[100],
-                  color: Colors.red,
+                  color: Colors.blue,
                   textColor: Colors.white,
                   onPressed: () {
-                    startNewGame();
+//                    startNewGame();
+                    showAchievements();
                   },
-                  child: Text('NOWA GRA'),
+                  child: Text('OSIĄGNIĘCIA'),
                 ),
                 RaisedButton(
                   splashColor: Colors.greenAccent[100],
@@ -220,7 +234,9 @@ class ScoreboardState extends State<ScoreboardWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Czy jesetś pewien, że chcesz rozpocząć nową grę?'),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Text('Do ilu gracie?'),
                 TextField(controller: inputController, keyboardType: TextInputType.number, decoration: InputDecoration(hintText: "Do ilu gracie?"))
               ],
@@ -237,7 +253,7 @@ class ScoreboardState extends State<ScoreboardWidget> {
                   setState(() {
                     this.isGameActive = true;
                     int score = int.parse(inputController.text);
-                    DataProvider.defaultProvider.setScore(score);
+                    DataProvider.defaultProvider.setTargetScore(score);
                     this.game.start();
                   });
                   Navigator.of(context).pop();
@@ -332,5 +348,10 @@ class ScoreboardState extends State<ScoreboardWidget> {
             );
           });
     }
+  }
+
+  void showAchievements() async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => AchievementsScreen()));
+    setState(() {});
   }
 }

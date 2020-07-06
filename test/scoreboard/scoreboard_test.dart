@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plantada/data/player.dart';
+import 'package:plantada/data/resource.dart';
 import 'package:plantada/scoreboard/scoreboard.dart';
 
 void main() {
@@ -48,7 +50,6 @@ void main() {
     expect(roundScore[Player.player2], 16);
     expect(roundScore[Player.player3], 4);
   });
-
 
   test('Resource short name should return enum name', () {
     expect(Resource.cigarettes.name(), 'cigarettes');

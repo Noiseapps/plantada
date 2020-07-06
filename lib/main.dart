@@ -1,9 +1,14 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:plantada/coreViews/app_bar.dart';
 import 'package:plantada/scoreboard/scoreboard_widget.dart';
 
-import 'utils/data_provider.dart';
+import 'menu.dart';
 
 void main() {
+  Crashlytics.instance.enableInDevMode = true;
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
   runApp(MyApp());
 }
 
@@ -17,9 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      darkTheme: ThemeData(
-        primarySwatch: Colors.blueGrey
-      ),
+      darkTheme: ThemeData(primarySwatch: Colors.blueGrey),
       home: MyHomePage(title: 'PLANTADA'),
     );
   }
@@ -44,35 +47,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget center = _centerWidget(this.currentIndex);
+    _WidgetWrapper center = _centerWidget(this.currentIndex);
+    var appBar = PlantadaAppBarProvider.appBar(widget.title, center.appBarActions);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.black, fontFamily: 'PorterSans'),
-        ),
-      ),
-      body: _centerWidget(this.currentIndex),
+      appBar: appBar,
+      body: center.mainWidget,
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.score),
-            title: Text('Wyniki'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            title: Text('Legenda'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.label_important),
-            title: Text('Zasady'),
-          ),
-        ],
+        items: _bottomTabs(),
         currentIndex: currentIndex,
         unselectedItemColor: Colors.blue[400],
         selectedItemColor: Colors.blue[900],
@@ -82,18 +63,37 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<BottomNavigationBarItem> _bottomTabs() {
-    return BottomBarItem.values().map((bottomItem) => BottomNavigationBarItem(icon: Icon(bottomItem.icon), title: Text(bottomItem.title)));
+    return BottomBarItem.values().map((bottomItem) => BottomNavigationBarItem(icon: Icon(bottomItem.icon), title: Text(bottomItem.title))).toList();
   }
 
-  Widget _centerWidget(int activeTab) {
+  _WidgetWrapper _centerWidget(int activeTab) {
     var tabItem = BottomBarItem.atIndex(activeTab);
     switch (tabItem) {
       case BottomBarItem.score:
-        return ScoreboardWidget();
+        var scoreboardWidget = ScoreboardWidget();
+        var actions = [
+          IconButton(
+            icon: Icon(Icons.autorenew),
+            onPressed: () {
+              scoreboardWidget.startNewGame();
+            },
+          )
+        ];
+        return _WidgetWrapper(scoreboardWidget, actions);
       default:
-        return Center(
+        var widget = Center(
           child: Text("Coming soon"),
         );
+        return _WidgetWrapper(widget);
     }
   }
+}
+
+class _WidgetWrapper {
+  final List<Widget> _appBarActions;
+  final Widget mainWidget;
+
+  const _WidgetWrapper(this.mainWidget, [this._appBarActions]);
+
+  List<Widget> get appBarActions => _appBarActions ?? List();
 }

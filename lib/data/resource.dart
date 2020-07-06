@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:plantada/scoreboard/scoreboard.dart';
+
+enum Resource {
+  cigarettes,
+  booze,
+  weed,
+  guns,
+  coke,
+}
+
+extension ResourceDisplayName on Resource {
+  String name() {
+    return this.toString().split('.').last;
+  }
+}
 
 class ResourceColors {
   static final List<MaterialColor> _colors = [Colors.purple, Colors.blue, Colors.green, Colors.brown, Colors.blueGrey];
