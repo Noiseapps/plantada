@@ -15,6 +15,5 @@ class AchievementScreenState extends State<AchievementsScreen> {
       appBar: PlantadaAppBarProvider.appBar("PLANTADA", []),
       body: AchievementsList(),
     );
-    return AchievementsList();
   }
 }

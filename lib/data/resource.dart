@@ -12,6 +12,10 @@ extension ResourceDisplayName on Resource {
   String name() {
     return this.toString().split('.').last;
   }
+
+  String filePath() {
+    return 'assets/icons/resources/${name()}.svg';
+  }
 }
 
 class ResourceColors {

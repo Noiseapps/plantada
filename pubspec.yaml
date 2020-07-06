@@ -56,6 +56,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/icons/resources/
     - assets/icons/achievements/
 
   # The following line ensures that the Material Icons font is

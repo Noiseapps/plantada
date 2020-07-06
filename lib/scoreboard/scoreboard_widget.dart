@@ -4,6 +4,7 @@ import 'package:plantada/data/resource.dart';
 import 'package:plantada/data/player.dart';
 import 'package:plantada/scoreboard/achievements/achievement_screen.dart';
 import 'package:plantada/scoreboard/achievements/achievements_list.dart';
+import 'package:plantada/scoreboard/player_name_input.dart';
 import 'package:plantada/utils/data_provider.dart';
 
 import 'game.dart';
@@ -132,7 +133,7 @@ class _ScoreboardState extends State<ScoreboardWidget> {
               padding: EdgeInsets.all(4),
               alignment: Alignment.topLeft,
               child: Text(
-                player.displayName(),
+                ProviderFactory.activeProvider().playerName(player),
                 style: TextStyle(color: Colors.grey[500], fontSize: 14),
               ),
             ),
@@ -160,7 +161,7 @@ class _ScoreboardState extends State<ScoreboardWidget> {
   List<Widget> getTextChildren(Resource resource) {
     return <Widget>[
       SizedBox(height: 6),
-      SvgPicture.asset('assets/icons/${resource.name()}.svg', height: 30, color: ResourceColors.iconColor(resource)),
+      SvgPicture.asset(resource.filePath(), height: 30, color: ResourceColors.iconColor(resource)),
       SizedBox(height: 6),
       cell(Player.player1, resource),
       SizedBox(height: 3),
@@ -192,7 +193,7 @@ class _ScoreboardState extends State<ScoreboardWidget> {
                             padding: EdgeInsets.all(4),
                             alignment: Alignment.topLeft,
                             child: Text(
-                              player.displayName(),
+                              ProviderFactory.activeProvider().playerName(player),
                               style: TextStyle(color: ResourceColors.textColor(resource), fontSize: 14),
                             ),
                           ),
@@ -223,46 +224,59 @@ class _ScoreboardState extends State<ScoreboardWidget> {
   void startNewGame() {
     final inputController = TextEditingController();
     inputController.text = DataProvider.defaultProvider.targetScore().toString();
+    var nameInputs = [
+      PlayerNameInput(player: Player.player1),
+      PlayerNameInput(player: Player.player2),
+      PlayerNameInput(player: Player.player3),
+      PlayerNameInput(player: Player.player4),
+    ];
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext buildContext) {
           return AlertDialog(
-            title: Text("Ostrzeżenie!"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Czy jesetś pewien, że chcesz rozpocząć nową grę?'),
-                SizedBox(
-                  height: 10,
+            title: Text("Nowa gra"),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Czy jesetś pewien, że chcesz rozpocząć nową grę?'),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('Wynik potrzebny do zwycięstwa:', textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold),),
+                  TextField(controller: inputController, keyboardType: TextInputType.number, decoration: InputDecoration(hintText: "Do ilu gracie?")),
+                  ...nameInputs
+                ],
+              )),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ZAMKNIJ"),
                 ),
-                Text('Do ilu gracie?'),
-                TextField(controller: inputController, keyboardType: TextInputType.number, decoration: InputDecoration(hintText: "Do ilu gracie?"))
+                FlatButton(
+                  onPressed: () {
+                    setState(() {
+                      this.isGameActive = true;
+                      int score = int.parse(inputController.text);
+                      var activeProvider = ProviderFactory.activeProvider();
+                      activeProvider.setTargetScore(score);
+                      nameInputs.forEach((element) {
+                        var mapping = element.playerName();
+                        activeProvider.setPlayerName(mapping.player, mapping.name);
+                      });
+                      this.game.start();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  color: Colors.red,
+                  child: Text("ROZPOCZNIJ"),
+                )
               ],
-            ),
-            actions: [
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("ZAMKNIJ"),
-              ),
-              FlatButton(
-                onPressed: () {
-                  setState(() {
-                    this.isGameActive = true;
-                    int score = int.parse(inputController.text);
-                    DataProvider.defaultProvider.setTargetScore(score);
-                    this.game.start();
-                  });
-                  Navigator.of(context).pop();
-                },
-                color: Colors.red,
-                child: Text("ROZPOCZNIJ"),
-              )
-            ],
-          );
+            );
         });
   }
 
@@ -306,7 +320,9 @@ class _ScoreboardState extends State<ScoreboardWidget> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: roundResults.roundScores.entries.map((e) => Text("Wynik ${e.key.displayName()}: ${e.value} punktów")).toList(),
+                children: roundResults.roundScores.entries
+                    .map((e) => Text("Wynik ${ProviderFactory.activeProvider().playerName(e.key)}: ${e.value} punktów"))
+                    .toList(),
               ),
               actions: [
                 FlatButton(
@@ -332,7 +348,7 @@ class _ScoreboardState extends State<ScoreboardWidget> {
           builder: (BuildContext buildContext) {
             return AlertDialog(
               title: Text("Gratulacje!"),
-              content: Text('Gracz ${winningPlayer.displayName()} wygrywa.'),
+              content: Text('Gracz ${ProviderFactory.activeProvider().playerName(winningPlayer)} wygrywa.'),
               actions: [
                 FlatButton(
                   onPressed: () {

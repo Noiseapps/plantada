@@ -78,7 +78,7 @@ class AchievementsListState extends State<AchievementsList> {
                   children: List<Widget>.generate(players.length, (index) {
                     var player = players[index];
                     return RadioListTile<Player>(
-                      title: Text(player.displayName()),
+                      title: Text(ProviderFactory.activeProvider().playerName(player)),
                       value: player,
                       groupValue: selectedPlayer,
                       onChanged: (value) {
@@ -116,12 +116,12 @@ class AchievementRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          if(isEnabled) {
+          if (isEnabled) {
             this.onTap(achievementData);
           }
         },
         onLongPress: () {
-          if(!isEnabled) {
+          if (!isEnabled) {
             this.onLongPress(achievementData);
           }
         },
@@ -141,9 +141,12 @@ class AchievementRow extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Image(image: AssetImage('assets/icons/achievements/${achievementData.fileName()}.png'), height: 30),
-                        SizedBox(height: 4,),
+                        SizedBox(
+                          height: 4,
+                        ),
                         Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20.0)), border: Border.all(width: 1.0, color: Colors.grey[400])),
+                          decoration:
+                              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20.0)), border: Border.all(width: 1.0, color: Colors.grey[400])),
                           child: Text(
                             "+${achievementData.score} PZ",
                             textAlign: TextAlign.center,
@@ -152,7 +155,9 @@ class AchievementRow extends StatelessWidget {
                         )
                       ],
                     )),
-                SizedBox(width: 10,),
+                SizedBox(
+                  width: 10,
+                ),
                 Expanded(
                     flex: 6,
                     child: Column(
@@ -173,16 +178,19 @@ class AchievementRow extends StatelessWidget {
                         achievementData.formattedDescription,
                       ],
                     )),
-                SizedBox(width: 10,),
+                SizedBox(
+                  width: 10,
+                ),
                 Expanded(
                     flex: 1,
                     child: Center(
                       child: Visibility(
                           visible: !isEnabled,
                           child: Text(
-                            wonBy != null ? wonBy.displayName() : "",
+                            wonBy != null ? ProviderFactory.activeProvider().playerName(wonBy) : "",
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey[800], fontSize: 20),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.grey[800], fontSize: 15),
                           )),
                     )),
               ],
